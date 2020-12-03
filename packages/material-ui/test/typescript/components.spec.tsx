@@ -626,14 +626,29 @@ const MenuTest = () => {
 };
 
 const PaperTest = () => (
-  <Paper elevation={4}>
-    <Typography variant="h5" component="h3">
-      This is a sheet of paper.
-    </Typography>
-    <Typography variant="body1" component="p">
-      Paper can be used to build surface or other elements for your application.
-    </Typography>
-  </Paper>
+  <div>
+    <Paper elevation={4}>
+      <Typography variant="h5" component="h3">
+        This is a sheet of paper.
+      </Typography>
+      <Typography variant="body1" component="p">
+        Paper can be used to build surface or other elements for your application.
+      </Typography>
+    </Paper>
+    <Paper component="span" />
+    <Paper component={TestOverride} />
+    {/* @ts-expect-error */}
+    <Paper component={TestOverride} x="4" />
+    <Paper component={TestOverride} x={4} elevation={4} />
+    <Paper component="span" ref={(elem: HTMLSpanElement) => {}} />
+    <Paper<typeof TestOverride>
+      component={TestOverride}
+      ref={(elem) => {
+        expectType<HTMLDivElement | null, typeof elem>(elem);
+      }}
+      x={3}
+    />
+  </div>
 );
 
 const CircularProgressTest = () => (
@@ -1065,11 +1080,9 @@ const LinkTest = () => {
 
 const refTest = () => {
   // for a detailed explanation of refs in react see https://github.com/mui-org/material-ui/pull/15199
-  const genericRef = React.createRef<Element>();
   const divRef = React.createRef<HTMLDivElement>();
   const inputRef = React.createRef<HTMLInputElement>();
 
-  <Paper ref={genericRef} />;
   <Paper ref={divRef} />;
   // undesired: throws when assuming inputRef.current.value !== undefined
   <Paper ref={inputRef} />;
